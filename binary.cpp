@@ -1,12 +1,10 @@
 #include <iostream>
 #include <stack>
-#include <cmath>
-
-using namespace std;
+#include <bitset>
 
 // Function to convert decimal to binary using stack
-void decimalToBinary(int decimal) {
-    stack<int> binaryStack;
+std::string decimalToBinary(int decimal) {
+    std::stack<int> binaryStack;
 
     while (decimal > 0) {
         int remainder = decimal % 2;
@@ -14,23 +12,24 @@ void decimalToBinary(int decimal) {
         decimal /= 2;
     }
 
-    cout << "Binary representation: ";
+    std::string binaryString = "";
 
     while (!binaryStack.empty()) {
-        cout << binaryStack.top();
+        binaryString += std::to_string(binaryStack.top());
         binaryStack.pop();
     }
 
-    cout << endl;}
-// Function to convert binary to decimal
-int binaryToDecimal(string binary) {
+    return binaryString;
+}
 
+// Function to convert binary to decimal
+int binaryToDecimal(std::string binary) {
     int decimal = 0;
     int power = 0;
 
     for (int i = binary.length() - 1; i >= 0; --i) {
         if (binary[i] == '1') {
-            decimal += pow(2, power);
+            decimal += (binary[i] - '0') << power;
         }
         power++;
     }
@@ -38,22 +37,36 @@ int binaryToDecimal(string binary) {
     return decimal;
 }
 
-int main()
- {
+int main() {
     int decimal;
+    std::cout << "Enter a decimal number: ";
+    std::cin >> decimal;
 
-    cout << "Enter a decimal number: ";
-    cin >> decimal;
+    std::string binary = decimalToBinary(decimal);
+    std::cout << "Binary representation: " << binary << std::endl;
 
-    decimalToBinary(decimal);
+    std::cout << "Enter a binary number: ";
+    std::cin >> binary;
 
-    string binary;
+    // Validate input
+    bool validInput = true;
+    for (char c : binary) {
+        if (c != '0' && c != '1') {
+            validInput = false;
+            break;
+        }
+    }
 
-    cout << "Enter a binary number: ";
-cin >> binary;
-int result = binaryToDecimal(binary);
+    if (validInput) {
+        int result = binaryToDecimal(binary);
+        std::cout << "Decimal representation: " << result << std::endl;
 
-    cout << "Decimal representation: " << result << endl;
+        // Convert binary to hexadecimal using bitset
+        std::bitset<32> bitset(binary);
+        std::cout << "Hexadecimal representation: 0x" << std::hex << bitset.to_ulong() << std::endl;
+    } else {
+        std::cout << "Invalid input. Please enter a binary number." << std::endl;
+    }
 
     return 0;
 }
